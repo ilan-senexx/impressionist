@@ -12,6 +12,20 @@ module ImpressionistController
       base.before_filter :impressionist_app_filter
     end
 
+    def impressionist_job(obj,message=nil,opts={})
+      binding.pry
+      if should_count_impression?(opts)
+        if obj.respond_to?("impressionable?")
+          if unique_instance?(obj, opts[:unique])
+            obj.impressions.create(associative_create_statement({:message => message}))
+          end
+        else
+          # we could create an impression anyway. for classes, too. why not?
+          raise "#{obj.class.to_s} is not impressionable!"
+        end
+      end
+    end
+
     def impressionist(obj,message=nil,opts={})
       if should_count_impression?(opts)
         if obj.respond_to?("impressionable?")
