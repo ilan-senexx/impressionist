@@ -12,6 +12,13 @@ module ImpressionistController
       base.before_filter :impressionist_app_filter
     end
 
+    def delay_impressionist_job(obj_id,message=nil,opts={})
+      if should_count_impression?(opts)
+        msg = associative_create_statement({:message => message})
+        ForumTopic.delay.create_impression(obj_id, msg, opts)
+      end
+    end
+
     def impressionist_job(obj,message=nil,opts={})
       if should_count_impression?(opts)
         if obj.respond_to?("impressionable?")

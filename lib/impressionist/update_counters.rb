@@ -12,8 +12,11 @@ module Impressionist
     end
 
     def update
-      klass.
-      update_counters(id, column_name => result)
+      # klass.update_counters(id, column_name => result)
+      obj = klass.where(id:id).first
+      return true if obj.blank?
+      new_count = obj.impressions_count + result
+      obj.update_attributes(impressions_count: new_count)
     end
 
     private
